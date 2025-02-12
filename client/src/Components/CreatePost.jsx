@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import Axios from 'axios';
-// import ReactQuill from 'react-quill';
-// import 'react-quill/dist/quill.snow.css';
 import { useNavigate } from 'react-router-dom';
 
 function CreatePost() {
@@ -12,31 +10,8 @@ function CreatePost() {
   const [author, setAuthor] = useState('1');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [user , setUser] = useState('')
+  const [user, setUser] = useState('')
   const navigate = useNavigate();
-
-  // const modules = {
-  //   toolbar: [
-  //     [{ header: [1, 2, 3, 4, 5, 6, false] }],
-  //     ['bold', 'italic', 'underline', 'strike'],
-  //     [{ list: 'ordered' }, { list: 'bullet' }, { indent: -1 }, { indent: +1 }],
-  //     ['link', 'image'],
-  //     ['clean'],
-  //   ],
-  // };
-
-  // const formats = [
-  //   'header',
-  //   'bold',
-  //   'italic',
-  //   'underline',
-  //   'strike',
-  //   'list',
-  //   'bullet',
-  //   'indent',
-  //   'link',
-  //   'image',
-  // ];
 
   const POST_CATEGORIES = [
     'Agriculture',
@@ -51,6 +26,7 @@ function CreatePost() {
     e.preventDefault();
     setError('');
     setSuccess('');
+    console.log("Submitting Post:", { title, category, desc, author, thumbnail });
 
     if (!title || !desc) {
       setError('Title and description are required.');
@@ -58,41 +34,33 @@ function CreatePost() {
     }
 
     const formData = new FormData();
+    // Unique ID
     formData.append('title', title);
     formData.append('category', category);
     formData.append('desc', desc);
-    formData.append('author', user.id);
+    formData.append('author', user);
     if (thumbnail) {
       formData.append('thumbnail', thumbnail);
     }
 
     try {
       const response = await Axios.post('http://localhost:3000/api/create', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
 
 
       if (response.status === 201) {
-        // const newPost = {
-        //   id: `${Date.now()}`, // Generate a unique ID
-        //   thumbnail: thumbnail ? URL.createObjectURL(thumbnail) : '',
-        //   category,
-        //   title,
-        //   desc,
-        //   author: `By: ${author}`,
-        //   authorID: Number(author),
-        // };
         setSuccess('Post created successfully!');
         setTitle('');
         setCategory('Uncategorised');
         setDesc('');
         setThumbnail('');
-        navigate('/');
-        // navigate('/', { state: { newPost } });
+        navigate("/", { state: { newPost: response.data.post } });
+
       }
     } catch (err) {
       setError(err.response?.data?.error || 'Something went wrong. Please try again.');
-      console.error('Error creating post:', err);
+      
     }
   };
 
@@ -125,7 +93,7 @@ function CreatePost() {
           <textarea
             placeholder='Description'
             value={desc}
-            onChange={(e)=>setDesc(e.target.value)}
+            onChange={(e) => setDesc(e.target.value)}
             className="create-post-editor"
             rows={10}
           />

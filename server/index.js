@@ -1,23 +1,22 @@
-import dotenv from "dotenv";
+
 import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
 import pg from "pg"
 import bcrypt from "bcrypt"
 import bodyParser from "body-parser";
-import cors from "cors";
-import multer from "multer";
 import path from "path";
+import multer from "multer";
 
+dotenv.config(); // Correct way to use dotenv in ES modules
 
-
-
-dotenv.config();
 const app = express();
-const port = process.env.app_port || 3000;
+const port = 3000;
+app.use(express.json({extended:true}))
+app.use(express.urlencoded({extended:true}))
+app.use(cors({credentials:true,origin: "http://localhost:5173"}))
 
-app.use(bodyParser.json());
-app.use(cors());
-
-//connceting database
+// connceting database
 const db = new pg.Client({
     user: process.env.DB_USER,
     host: process.env.DB_HOST,
@@ -57,12 +56,7 @@ const upload = multer({
     },
 });
 
-app.use('/uploads', express.static('uploads'));
-
-
-
-
-// Create the multer upload middleware with the storage config
+// app.use('/uploads', express.static('uploads'));
 
 app.get("/", (req, res) => {
     res.send('Hello')
@@ -85,7 +79,7 @@ app.post("/api/register", async (req, res) => {
     }
 });
 
-// Login Endpoint
+// // Login Endpoint
 app.post("/api/login", async (req, res) => {
     const { email, password } = req.body;
 
@@ -112,17 +106,22 @@ app.post("/api/login", async (req, res) => {
     }
 });
 
+
 app.post('/api/create', upload.single('thumbnail'), async (req, res) => {
+    try {
+
     const { title, category, desc,author } = req.body;
+    
   
     if (!title || !desc) {
       return res.status(400).json({ error: 'Title and description are required.' });
     }
   
-    try {
+    
       // Save to database
-      const thumbnail = req.file ? req.file.filename : null;
-      const result = await db.query(
+      const thumbnail = req.file ? `/uploads/${req.file.filename}` : null;
+
+      const result = await db.query (
         'INSERT INTO posts (title, category, description,thumbnail,author ) VALUES ($1, $2, $3, $4, $5) RETURNING *',
         [title, category, desc,thumbnail,author ]
       );
@@ -135,11 +134,20 @@ app.post('/api/create', upload.single('thumbnail'), async (req, res) => {
 });
 
 
+app.get('/api/posts', async (req, res) => {
+    try {
+        const result = await db.query('SELECT * FROM posts');  
+        console.log("Fetched Posts from DB:", result.rows); // Debugging
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching posts:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
   
 
-
-
-// module.exports=upload;
+// // module.exports=upload;
 app.listen(port,()=>{
     console.log(`Server running on port ${port}`)
 });

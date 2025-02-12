@@ -15,17 +15,6 @@ function Login() {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
-  // const handleChange = (e) => {
-  //   setUserData(prevState => {
-  //     return { ...prevState, [e.target.name]: e.target.value };
-  //   });
-  // };
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   // Handle form submission logic
-  //   console.log(userData);
-  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {

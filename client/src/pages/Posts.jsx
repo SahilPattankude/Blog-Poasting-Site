@@ -41,20 +41,18 @@ export const DUMMY_POSTS = [
 ];
 
 function Posts({ posts = DUMMY_POSTS }) {
-  // const [posts] = useState(DUMMY_POSTS);
-
   return (
     <section className="posts-section">
       <div className="posts-container">
-        {posts.map(({ id, thumbnail, category, desc, title, authorID,author }) => (
-          <div key={id} className="post-item">
-            <img src={thumbnail} alt={title} className="post-thumbnail" />
+        {posts.map((post, index) => (
+          <div key={post.id || `post-${index}`} className="post-item"> {/* Ensure unique key */}
+            <img src={post.thumbnail} alt={post.title} className="post-thumbnail" />
             <div className="post-content">
-              <span className="post-category">{category}</span>
-              <h3 className="post-title">{title}</h3>
-              <p className="post-desc">{desc}</p>
-              <h4 className='post-desc'>{author}</h4>
-              <p className="post-author">Author ID: {authorID}</p>
+              <span className="post-category">{post.category}</span>
+              <h3 className="post-title">{post.title}</h3>
+              <p className="post-desc">{post.desc}</p>
+              <h4 className='post-desc'>{post.author}</h4>
+              <p className="post-author">Author ID: {post.authorID}</p>
             </div>
           </div>
         ))}
@@ -62,6 +60,7 @@ function Posts({ posts = DUMMY_POSTS }) {
     </section>
   );
 }
+
 Posts.propTypes = {
   posts: PropTypes.arrayOf(
     PropTypes.shape({

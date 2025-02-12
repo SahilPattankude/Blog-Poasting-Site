@@ -8,11 +8,8 @@ import ErrorPage from "./Components/ErrorPage";
 import Layout from "./pages/Layout";
 import { createBrowserRouter } from "react-router-dom";
 import { RouterProvider } from "react-router-dom";
-
 import "./App.css";
 import PostDetails from "./Components/PostDetails";
-import Authors from "./Components/Authors";
-import CategoryPost from "./Components/CategoryPost";
 import HomePage from "./Components/HomePage";
 import UserProfile from "./Components/UserProfile";
 import Dashboard from "./Components/Dashboard";
@@ -35,8 +32,6 @@ const router = createBrowserRouter([
       { path: "posts/:id/delete", element: <DeletePost /> },
       { path: "error", element: <ErrorPage /> },
       { path: "posts/:id", element: <PostDetails /> },
-      { path: "authors", element: <Authors /> },
-      { path: "posts/categories/:category", element: <CategoryPost /> },
       { path: "profile/:id", element: <UserProfile /> },
       { path: "myposts/:id", element: <Dashboard /> },
     ],

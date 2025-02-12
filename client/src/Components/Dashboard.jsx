@@ -1,14 +1,11 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DUMMY_POSTS } from '../pages/Posts';
 import { Link } from 'react-router-dom';
- // Ensure you create and import this CSS file
 
 function Dashboard() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-
 
   useEffect(() => {
     fetchPosts();
@@ -33,7 +30,6 @@ function Dashboard() {
   if (error) {
     return <div className="error-message">Error: {error}</div>;
   }
-
 
   return (
     <section className="dashboard-section">
